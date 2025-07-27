@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 
-const browser = await puppeteer.launch({ headless: false });
+const browser = await puppeteer.launch({ headless: false, devtools: true });
 const page = await browser.newPage();
 
 await page.setViewport({
@@ -35,7 +35,7 @@ async function getTotalElements() {
 
 async function loadAllElements() {
   await page.locator(".game_cell:last-child").scroll();
-  await page.waitForNetworkIdle();
+  await page.waitForNetworkIdle({ idleTime: 1000 });
   const newCount = await getTotalElements();
   if (newCount > elementCount) {
     elementCount = newCount;
@@ -61,12 +61,12 @@ async function addToCollection() {
         .locator(`${popupClass} input[name="collection[private]"]`)
         .click();
       await page.locator(`${popupClass} .buttons .button`).click(); // TODO better selector
-      await page.waitForNetworkIdle({ idleTime: 2000 });
+      await page.waitForNetworkIdle({ idleTime: 1500 });
       await page.keyboard.press("Escape");
     } else {
       // It already selects newly created collection
       await page.locator(`${popupClass} .buttons .button`).click(); // TODO better selector
-      await page.waitForNetworkIdle({ idleTime: 2000 });
+      await page.waitForNetworkIdle({ idleTime: 1500 });
       await page.keyboard.press("Escape");
     }
   }
